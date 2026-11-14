@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Python Arcade: The Error Code Challenge</title><link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"><style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font:600 15px/1.5 Verdana,sans-serif;color:#14213d;background:#fbf3dc linear-gradient(#e8dcb8 1px,transparent 1px) 0 0/28px 28px;background-image:linear-gradient(#e8dcb8 1px,transparent 1px),linear-gradient(90deg,#e8dcb8 1px,transparent 1px)}
+h1,h2,.px,.hud,.b,.tf .o{font-family:'Press Start 2P','Courier New',monospace}
+#app{max-width:820px;margin:0 auto;padding:14px;position:relative;z-index:2}
+.card{background:#fff;border:5px solid #1f4fd8;box-shadow:0 0 0 3px #ffd23f,6px 8px 0 #0003;border-radius:10px;padding:16px;margin:12px 0}
+h1{font-size:clamp(15px,4.5vw,26px);line-height:1.6;color:#e63946;text-shadow:3px 3px #1f4fd8;text-align:center;margin:6px 0}
+h1 span{color:#1f4fd8;text-shadow:3px 3px #ffd23f;font-size:.7em}
+h2{font-size:clamp(13px,3.6vw,20px);line-height:1.6;color:#1f4fd8;text-shadow:2px 2px #ffd23f;margin:6px 0}
+.c{text-align:center}.big{font-size:80px;animation:bob 1.5s infinite}
+.b{padding:13px 18px;border:4px solid #14213d;background:#ffd23f;box-shadow:0 5px #14213d;font-size:12px;cursor:pointer;border-radius:6px;margin:8px 4px;color:#14213d}
+.b:active{transform:translateY(4px);box-shadow:0 1px #14213d}.b.g{background:#3ddc84}.b.r{background:#ff6b6b}
+input{font:700 16px Verdana;padding:12px;border:4px solid #14213d;border-radius:6px;width:min(320px,90%);text-align:center}
+.avs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:8px 0}
+.av{font-size:34px;border:4px solid #14213d;background:#fff;border-radius:8px;padding:4px 8px;cursor:pointer}.av.sel{background:#ffd23f;transform:scale(1.15);box-shadow:0 0 0 3px #1f4fd8}
+.hud{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;font-size:10px;background:#14213d;color:#ffd23f;padding:10px;border-radius:8px;line-height:1.6}
+.scene{height:96px;margin-top:10px;border:4px solid #14213d;border-radius:10px;background:linear-gradient(var(--b));position:relative;overflow:hidden}
+.scene:after{content:"";position:absolute;left:0;right:0;bottom:0;height:12px;background:repeating-linear-gradient(90deg,#8b5a2b 0 20px,#a9713a 20px 40px)}
+.deco{position:absolute;top:4px;left:8px;right:8px;font-size:22px;letter-spacing:10px;opacity:.7;white-space:nowrap;overflow:hidden}
+.hero,.en{position:absolute;bottom:10px;font-size:42px;transition:left .8s,transform .3s;z-index:2}.en{right:4%;animation:bob 1.2s infinite}
+.hero.atk{transform:translateX(30px) scale(1.2)}.en.hit{animation:hit .5s}.hero.hurt{animation:shake .4s}.en.zap{transform:scale(1.4)}
+.qn{font:10px 'Press Start 2P',monospace;color:#e63946}.q{font-size:17px;margin:8px 0}
+pre{background:#0f1b3d;color:#e8f0ff;padding:12px;border-radius:8px;overflow-x:auto;font:13px/1.6 Consolas,monospace;margin:8px 0}
+.k{color:#ffd23f}.s{color:#7cfc9a}.cm{color:#8fa}
+.opts{display:grid;gap:10px;margin-top:10px}.o{font:700 14px Verdana;text-align:left;padding:12px;border:4px solid #14213d;border-radius:8px;cursor:pointer;box-shadow:0 4px #14213d;color:#14213d}
+.o0{background:#ffd23f}.o1{background:#8fb0ff}.o2{background:#7be39d}.o3{background:#ff9a9a}
+.tf{grid-template-columns:1fr 1fr}.tf .o{text-align:center;font-size:18px;padding:22px 8px}.tf .o0{background:#3ddc84}.tf .o1{background:#ff4d5a;color:#fff}
+.o:hover:not([disabled]){transform:translateY(-2px)}.o[disabled]{cursor:default;opacity:.55}
+.o.ok{opacity:1;background:#3ddc84!important;animation:pop .5s}.o.no{opacity:1;background:#ff4d5a!important;color:#fff;animation:shake .4s}
+.fb{margin-top:12px;padding:12px;border-radius:8px;border:3px dashed #1f4fd8;background:#eef3ff;animation:pop .4s}
+.map{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+.nd{border:4px solid #14213d;border-radius:12px;padding:10px 4px;text-align:center;background:#ffd23f;cursor:pointer;font:10px/1.6 'Press Start 2P',monospace;color:#14213d}
+.nd i{font-style:normal;font-size:34px;display:block}.nd.done{background:#3ddc84}.nd.lock{background:#ccc;opacity:.6;cursor:not-allowed}.nd.open{animation:bob 1.2s infinite}
+@media(max-width:560px){.map{grid-template-columns:repeat(2,1fr)}.tf{grid-template-columns:1fr}}
+.fl{position:fixed;bottom:-50px;font-size:28px;opacity:.3;animation:up linear infinite;z-index:1;pointer-events:none}
+.cf{position:fixed;top:-30px;font-size:26px;z-index:9;animation:dn 3s linear forwards;pointer-events:none}
+#mu{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:8px;z-index:9;font-size:20px;border:3px solid #14213d;background:#fff;border-radius:8px;cursor:pointer}
+@keyframes bob{50%{transform:translateY(-6px)}}@keyframes up{to{transform:translateY(-120vh) rotate(40deg)}}@keyframes dn{to{transform:translateY(110vh) rotate(360deg)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.06)}}@keyframes hit{50%{opacity:.2;transform:scale(1.5) rotate(15deg)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body><button id=mu onclick="S.mute=!S.mute;this.textContent=S.mute?'🔇':'🔊'">🔊</button><div id=app></div><script>
+const T=(q,a,e,c)=>({q,c,o:['TRUE','FALSE'],a:a?0:1,e}),M=(q,o,a,e,c)=>({q,c,o,a,e});
+const L=[
+{n:'The Sudden Crash',ic:'💥',en:'👾',bg:'#ffe3e3,#ffb3b3',dc:'🏙️💻🖥️🏙️💻',st:'A program waits for a number… but the user types a word! Spot the crash before it happens.',rw:'🏅 Crash Detector badge',q:[
+T('Entering text instead of a number in int(input()) shows a ValueError.',1,'int() can’t turn letters like “Ahmed” into a number, so Python raises ValueError.'),
+T('The keyword try is used to test code that may cause an error.',1,'try means: “try to run this risky code”.'),
+T('The code inside except runs only if NO error happens in try.',0,'except runs only when something goes wrong inside try.'),
+T('Dividing by zero in Python produces a ZeroDivisionError.',1,'10 / 0 breaks the laws of math, so ZeroDivisionError appears.'),
+T('try and except are used to make the program STOP when an error happens.',0,'They do the opposite: the program keeps running and shows a friendly message.')]},
+{n:'The Magic Shield',ic:'🛡️',en:'🔥',bg:'#e0ecff,#a9c8ff',dc:'🔥🛡️🔥🛡️🔥',st:'Fireballs are flying! Learn how try and except form a shield around dangerous code.',rw:'🛡️ Magic Shield',q:[
+T('You can use except without try in the same program.',0,'except must always come after a try block.'),
+T('You can name the error type after except, like: except ValueError.',1,'Naming the error gives you a shield for that exact attack.'),
+T('The code except: (with no error type) handles all kinds of errors.',1,'A bare except catches every type of error.'),
+T('Using while True with try and except lets the user retry until a valid value is entered.',1,'The loop keeps asking until the input is valid.'),
+T('break inside try stops the while loop when the input succeeds.',1,'break escapes the loop as soon as the input works.')]},
+{n:'The Black Hole',ic:'🕳️',en:'🌀',bg:'#2b1055,#6a3fb5',dc:'🌌⭐🕳️⭐🌌',st:'Deep space! Errors are sucking programs into a black hole. Know your enemies to survive.',rw:'📖 Boss Bestiary',q:[
+T('If we don’t use try and except, the program stops automatically when an error happens.',1,'An unhandled error crashes the program.'),
+T('ValueError happens only when dividing by zero.',0,'ValueError is for a wrong value (like int("abc")). Dividing by zero is ZeroDivisionError.'),
+T('You can use try and except inside functions.',1,'Error handling works inside functions too, making them stronger.'),
+T('Is this code correct?',0,'100/ is incomplete, so it is a SyntaxError: a typo that try can’t rescue.',`try:\n  print(100/)\nexcept:\n  print("Error")`),
+T('ZeroDivisionError happens when the user enters a word instead of a number.',0,'A word causes ValueError. ZeroDivisionError is only for dividing by zero.')]},
+{n:'Multi-Target Defense',ic:'🤖',en:'🔴',bg:'#d8f5e4,#8fe0b0',dc:'🤖🔴🔵🤖🔴',st:'Red and blue attacks arrive together. Your robot needs a different shield for each one!',rw:'⚔️ Smart Defense',q:[
+T('The message inside except is shown to the user instead of the default error message.',1,'Your own friendly message replaces Python’s scary red error.'),
+T('int("123") produces a ValueError.',0,'"123" contains only digits, so it converts fine to 123.'),
+T('You can handle more than one error type in the same try by using multiple except blocks.',1,'Each except block can catch a different error type.'),
+T('A try block must contain only one line of code.',0,'try can contain as many lines as you need.'),
+T('Using try and except makes the program smarter and gives clear messages to the user.',1,'Smart programs explain what went wrong instead of crashing.')]},
+{n:'The Code Dungeon',ic:'🏰',en:'🐉',bg:'#3b2a1a,#7a5230',dc:'🏰🕯️🗝️🕯️🏰',st:'Deep inside a dark dungeon, a dragon guards the keys to Python’s error-handling secrets.',rw:'🗝️ Dungeon Key',q:[
+M('Which error appears when the user enters a word instead of a number in int(input())?',['TypeError','NameError','ValueError','SyntaxError'],2,'A word can’t be converted to a number, so Python raises ValueError.'),
+M('Which two keywords are used to handle errors in Python?',['if and else','for and while','try and except','def and return'],2,'try attempts the code; except catches the error.'),
+M('What is the main goal of using try and except?',['Speed up the program','Prevent the program from stopping on an error and show a proper message','Create new variables','Repeat code many times'],1,'They keep the program alive and friendly.'),
+M('Which error happens when you divide by zero?',['ValueError','TypeError','ZeroDivisionError','IndexError'],2,'Dividing by zero always raises ZeroDivisionError.'),
+M('What is the correct syntax for using try and except?',['try: ... except: ...','except: ... try: ...','try: ... else: ...','if try: ... except: ...'],0,'try comes first, then except.')]},
+{n:'The Output Lab',ic:'🔬',en:'🧪',bg:'#e6fbff,#9ee7f5',dc:'🔬🧪📟🧪🔬',st:'Welcome to the lab! Read each experiment and predict exactly what the computer will print.',rw:'💎 Output Crystal',q:[
+M('What is the expected result of this code?',['abc','Prints nothing','Error!','Error and the program stops'],2,'int("abc") fails, so except runs and prints Error!',`try:\n  num = int("abc")\nexcept:\n  print("Error!")`),
+M('In this code, when does the code inside except run?',['Always when running the program','Only when a valid number is entered','When the user enters invalid data','When a number bigger than 100 is entered'],2,'except runs only when int() fails because of invalid data.',`try:\n  age = int(input("Enter age: "))\nexcept:\n  print("Invalid input!")`),
+M('What is the expected result of this code?',['0','10','Cannot divide!','result = 10'],2,'10 / 0 fails, so except prints Cannot divide!',`try:\n  result = 10 / 0\n  print(result)\nexcept:\n  print("Cannot divide!")`),
+M('Which code handles two different types of errors separately?',['try: ... except: ...','try: ... except Error: ...','try: ... except ValueError: ... except ZeroDivisionError: ...','try: ... finally: ...'],2,'Two except blocks, one for each error type.'),
+M('What is the expected result of this code?',['Wrong input!','50','100','Error and the program stops'],2,'int("50") works, so it prints 50 * 2 = 100.',`try:\n  num = int("50")\n  print(num * 2)\nexcept ValueError:\n  print("Wrong input!")`)]},
+{n:'The Time Loop',ic:'⏳',en:'🔁',bg:'#fff3c4,#ffd166',dc:'⏳🔁⏳🔁⏳',st:'You are trapped in a time loop! Only the right code can keep asking and finally set you free.',rw:'♾️ Infinite Continue',q:[
+M('What is the purpose of using while True with try and except?',['Run the code only once','Ask for input again until a valid value is entered','Stop the program immediately','Speed up the program'],1,'The loop traps the user until the input is valid.'),
+M('What is the role of break in this code?',['Stops the whole program','Jumps to except','Exits the while loop when the input succeeds','Repeats the loop again'],2,'break ends the loop once input works.',`while True:\n  try:\n    num = int(input("Enter number: "))\n    break\n  except:\n    print("Try again!")`),
+M('What is the expected result if the user enters “hello” and then “5”?',['You entered: hello, then it stops','Invalid! Try again, then it stops','Invalid! Try again. then You entered: 5','It stops immediately at the first error'],2,'“hello” fails (retry), then 5 works and break exits.',`while True:\n  try:\n    num = int(input("Enter: "))\n    print("You entered:", num)\n    break\n  except:\n    print("Invalid! Try again.")`),
+M('In a division program, which errors should be handled?',['A mistake in print only','Text instead of a number, and division by zero','A mistake in variable spelling only','Using int instead of str'],1,'Both bad input (ValueError) and ÷ 0 (ZeroDivisionError) can happen.'),
+M('What is the expected result of this code?',['Error','5','102','20'],1,'10 / 2 = 5 (Python displays 5.0).',`try:\n  num1 = int("10")\n  num2 = int("2")\n  print(num1 / num2)\nexcept:\n  print("Error")`)]},
+{n:'Final Boss: The Great Escape',ic:'🚪',en:'👹',bg:'#ffd6e0,#ff8fa3',dc:'🚪🔒🚪🔒🚪',st:'The last gate! Defeat the final boss and become a Python Error Master.',rw:'👑 Python Error Master crown',q:[
+M('Which code gives a different message for each error type?',['try: ... except: print("Error")','try: ... except ValueError: print("Numbers only!") except ZeroDivisionError: print("No zero!")','try: ... print("Error")','if error: print("Error")'],1,'Separate except blocks give separate messages.'),
+M('What is wrong with this code?',['Nothing, the code is correct','except: must come before except ValueError:','try: must contain else:','int(input()) is incorrect'],0,'The specific except comes first and the general one last, which is correct.',`try:\n  x = int(input("Enter:"))\nexcept ValueError:\n  print("Not a number!")\nexcept:\n  print("Error!")`),
+M('What is the expected result if the user enters 0?',['100','Enter numbers only!','Cannot divide by zero!','0'],2,'100 / 0 raises ZeroDivisionError.',`try:\n  num = int(input("Enter: "))\n  result = 100 / num\n  print(result)\nexcept ValueError:\n  print("Enter numbers only!")\nexcept ZeroDivisionError:\n  print("Cannot divide by zero!")`),
+M('Which message appears if the user enters “abc”?',['Next year: abc1','Unknown error!','Please enter a valid number!','The program stops with no message'],2,'int("abc") raises ValueError, caught by the first except.',`try:\n  age = int(input("Enter age: "))\n  print("Next year:", age + 1)\nexcept ValueError:\n  print("Please enter a valid number!")\nexcept:\n  print("Unknown error!")`),
+M('What is the main benefit of try and except inside functions?',['Makes the function slower','Creates global variables','Makes the function stronger and more professional, handling unexpected input','Removes the need for return'],2,'Robust functions can survive unexpected input.')]}
+];
+const AV=['🐍','🤖','👾','🧑‍💻','🦊','🐱','🚀','🦄'],A=document.querySelector('#app'),$=s=>document.querySelector(s);
+let S={mute:0,av:'🐍',name:'',done:[],st:[],sc:[]};
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const hl=c=>esc(c).replace(/("[^"]*")|\b(try|except|while|True|break|print|int|input|if|else|finally)\b/g,(m,s,k)=>s?`<span class=s>${s}</span>`:`<span class=k>${k}</span>`);
+function snd(f,d=.12,t='square'){if(S.mute)return;try{const c=snd.c||(snd.c=new AudioContext),o=c.createOscillator(),g=c.createGain();o.type=t;o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d)}catch(e){}}
+const tot=()=>S.sc.reduce((a,b)=>a+(b||0),0),hh=()=>'❤️'.repeat(S.h)+'🖤'.repeat(3-S.h);
+function conf(){for(let i=0;i<30;i++){const s=document.createElement('span');s.className='cf';s.textContent='🎉⭐🪙💾✨'.match(/./gu)[i%5];s.style.left=Math.random()*100+'vw';s.style.animationDelay=Math.random()*1.5+'s';document.body.append(s);setTimeout(()=>s.remove(),5000)}}
+for(let i=0;i<12;i++){const s=document.createElement('span');s.className='fl';s.textContent=['💻','🖥️','⌨️','🖱️','💾','🔌','📟','🐛'][i%8];s.style.left=i*8.5+'vw';s.style.animationDuration=14+i%5*4+'s';s.style.animationDelay=-i*2+'s';document.body.append(s)}
+function start(){A.innerHTML=`<div class="card c"><h1>PYTHON ARCADE:<br><span>THE ERROR CODE CHALLENGE!</span></h1><div class=big>🐍</div><p>Defeat the bugs, catch the errors and keep your program running!<br>8 levels. 3 lives in each level. If you lose all your lives, only that level restarts.</p><p class=px style="font-size:11px">YOUR NAME</p><input id=nm maxlength=14 placeholder="Type your name" value="${esc(S.name)}"><p class=px style="font-size:11px">CHOOSE YOUR HERO</p><div class=avs>${AV.map(a=>`<button class="av ${a==S.av?'sel':''}" onclick="sel(this)">${a}</button>`).join('')}</div><button class="b g" onclick="go()">PRESS START ▶</button></div>`}
+function sel(b){S.av=b.textContent;document.querySelectorAll('.av').forEach(x=>x.classList.toggle('sel',x==b));snd(500)}
+function go(){S.name=$('#nm').value.trim()||'Player';snd(700);map()}
+function map(){const n=S.done.filter(Boolean).length;A.innerHTML=`<div class=hud><span>${S.av} ${esc(S.name)}</span><span>LEVELS ${n}/8</span><span>⭐ ${tot()}</span></div><div class=card><h2>ADVENTURE MAP</h2><p>Pick your next adventure, ${esc(S.name)}!</p><div class=map>${L.map((l,i)=>{const o=i==0||S.done[i-1],d=S.done[i];return`<div class="nd ${d?'done':o?'open':'lock'}" onclick="${o?`intro(${i})`:''}"><i>${o?l.ic:'🔒'}</i>LV ${i+1}<br>${d?'⭐'.repeat(S.st[i]||1):o?'PLAY':''}</div>`}).join('')}</div></div>`}
+function intro(i){S.lv=i;const l=L[i];A.innerHTML=`<div class="card c" style="background:linear-gradient(${l.bg})"><p class=qn>LEVEL ${i+1}</p><h2>${l.n}</h2><div class=big>${l.ic}</div><p style="font-size:17px">${l.st}</p><p>${S.av} ${esc(S.name)} vs ${l.en}</p><p class=px style="font-size:11px">❤️❤️❤️ 3 lives</p><button class="b g" onclick="play()">GO! ▶</button><button class=b onclick="map()">MAP</button></div>`}
+function play(){S.q=0;S.h=3;S.ls=0;ask()}
+function ask(){const l=L[S.lv],q=l.q[S.q];A.innerHTML=`<div class=hud><span>${S.av} ${esc(S.name)}</span><span>LV ${S.lv+1}/8</span><span id=hh>${hh()}</span><span>⭐ ${tot()+S.ls}</span></div><div class=scene style="--b:${l.bg}"><div class=deco>${l.dc}</div><span id=hero class=hero style="left:${4+S.q*14}%">${S.av}</span><span id=en class=en>${l.en}</span></div><div class=card><div class=qn>${l.n.toUpperCase()} · Q${S.q+1}/5</div><p class=q>${esc(q.q)}</p>${q.c?`<pre>${hl(q.c)}</pre>`:''}<div class="opts ${q.o.length==2?'tf':''}">${q.o.map((o,i)=>`<button class="o o${i}" onclick="pick(${i})">${q.o.length>2?'ABCD'[i]+') ':''}${esc(o)}</button>`).join('')}</div><div id=fb></div></div>`}
+function pick(i){const l=L[S.lv],q=l.q[S.q],r=i==q.a,bs=document.querySelectorAll('.o');bs.forEach((b,j)=>{b.disabled=1;if(j==q.a)b.classList.add('ok');else if(j==i)b.classList.add('no')});
+if(r){S.ls+=100;ok();$('#hero').classList.add('atk');$('#en').classList.add('hit')}else{S.h--;snd(150,.3,'sawtooth');$('#hero').classList.add('hurt');$('#en').classList.add('zap');$('#hh').textContent=hh()}
+const last=S.h==0?'SEE RESULT':S.q==4?'FINISH LEVEL':'NEXT ▶';
+$('#fb').innerHTML=`<div class=fb><b>${r?'✅ Correct! +100':'❌ Oops! You lost a life. Correct answer: '+(q.o.length>2?'ABCD'[q.a]+') ':'')+esc(q.o[q.a])}</b><br>💡 ${esc(q.e)}</div><button class="b ${r?'g':''}" onclick="nxt()">${last}</button>`;$('#fb').scrollIntoView({behavior:'smooth',block:'nearest'})}
+function ok(){snd(660);setTimeout(()=>snd(880),100)}
+function nxt(){if(S.h==0)return fail();if(S.q==4)return clear();S.q++;ask()}
+function fail(){snd(120,.6,'sawtooth');A.innerHTML=`<div class="card c"><h2 style="color:#e63946">💀 LEVEL FAILED</h2><div class=big>😵</div><p>You lost all 3 lives in <b>${L[S.lv].n}</b>.<br>Don’t worry! Only this level restarts. Review the answers and try again!</p><button class="b g" onclick="play()">TRY AGAIN ↻</button><button class=b onclick="map()">MAP</button></div>`}
+function clear(){const i=S.lv,l=L[i];S.done[i]=1;S.st[i]=S.h;S.sc[i]=S.ls+S.h*50;conf();[523,659,784,1047].forEach((f,k)=>setTimeout(()=>snd(f,.2),k*130));
+A.innerHTML=`<div class="card c"><h2>LEVEL CLEARED!</h2><div class=big>${l.ic}</div><p class=px style="font-size:14px">${'⭐'.repeat(S.h)}</p><p>${l.rw} unlocked!<br>Score: ${S.sc[i]} (bonus: 50 per life left)</p>${i<7?`<button class="b g" onclick="intro(${i+1})">NEXT LEVEL ▶</button>`:`<button class="b g" onclick="fin()">FINAL RESULT 👑</button>`}<button class=b onclick="map()">MAP</button></div>`}
+function fin(){const s=S.st.reduce((a,b)=>a+(b||0),0);conf();A.innerHTML=`<div class="card c"><h1>NEW HIGH SCORE!</h1><div class=big>👑${S.av}</div><h2>${esc(S.name)} is now a Python Error Master!</h2><p class=px style="font-size:13px">⭐ ${tot()} points · ${s}/24 lives saved</p><p style="text-align:left;display:inline-block">✅ Stopped crashes with try / except<br>✅ Defeated ValueError and ZeroDivisionError<br>✅ Mastered while True retries with break<br>✅ Handled errors inside functions</p><br><button class="b g" onclick="S.done=[];S.st=[];S.sc=[];map()">PLAY AGAIN ↻</button></div>`}
+start();
+</script></body></html>
